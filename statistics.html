@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="shortcut icon" href="logo.png">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.1/dist/chart.min.js"></script>
+    <link rel="stylesheet" href="everyday.css">
+    <title>Statistics</title>
+    <style>
+        body {
+            display: flex;
+            flex-wrap: wrap;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-evenly;
+            gap: 75px;
+        }
+        .Chart-Container {
+            width: 700px;
+            height: 900px;
+            text-align: center;
+            font-size: 13pt;
+            font-weight: 500;
+            line-height: 29pt;
+        }
+    </style>
+</head>
+<body>
+    <div class="Chart-Container">
+        Done
+        <canvas id="myChart" ></canvas>
+    </div>
+    <div class="Chart-Container">
+        Percent
+        <canvas id="myChart2" ></canvas>
+    </div>
+</body>
+<script>
+    var color = {blue: "#249cff", red: "#ff0000", orange: "#ffa503", purple: "#a64ca6", teal: "#329999", green: "#249c03", grey: "#888888",}
+    var categories = JSON.parse(localStorage.categories);
+    var categoriesAbsolute = categories.map(x => Object.values(x.dates)).map(x => x.filter(x => x == "done").length);
+    var total = categoriesAbsolute.reduce((x, y) => x + y);
+    var longestStreaks = categories.map(x => x.longestStreak);
+
+    Chart.defaults.color ='white';
+
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: categories.map(x => x.name),
+        datasets: [
+            {
+                label: 'Done',
+                data: categoriesAbsolute,
+                backgroundColor: categories.map(x => color[x.color]),
+                borderColor: [
+                    'black',
+                ],
+                borderWidth: 1
+            },
+            {
+                label: 'Longest Streak',
+                data: longestStreaks,
+                backgroundColor: ["black"],
+                borderColor: [
+                    'white',
+                ],
+                borderWidth: 0
+            }
+        ]
+    },
+    options: {
+        animation: {
+            duration: 0,
+        },
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        },
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: false,
+            },
+        },
+    }
+});
+
+var ctx2 = document.getElementById('myChart2').getContext('2d');
+var myChart2 = new Chart(ctx2, {
+    type: 'doughnut',
+    data: {
+        labels: categories.map(x => x.name),
+        datasets: [{
+            label: '%',
+            data: categoriesAbsolute.map(x => Math.round(x / total * 100)),
+            backgroundColor: categories.map(x => color[x.color]),
+            borderColor: [
+                'black',
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        animation: {
+            duration: 0,
+        },
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        return `${context.label}: ${context.formattedValue + context.dataset.label}`;
+                    }
+                }
+            },
+            legend: {
+                onClick: updateRatio,
+            }
+        }
+    }
+});
+
+
+var pieDoughnutLegendClickHandler = Chart.controllers.doughnut.overrides.plugins.legend.onClick;
+var copy = categoriesAbsolute.map(x => x);
+
+function updateRatio(e, legendItem, legend) {
+    var index = legendItem.index;
+    
+    if (legendItem.hidden) {
+        copy[index] = categoriesAbsolute[index];
+    } else {
+        copy[index] = 0;
+    }
+    e.chart.config._config.data.datasets[0].data = copy.map(x => Math.round(x / copy.reduce((x, y) => x + y) * 100));
+    
+    pieDoughnutLegendClickHandler(e, legendItem, legend);
+};
+
+</script>
+</html>

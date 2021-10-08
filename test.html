@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <style>
+      .draggable {
+        display: inline-block;
+        width: 100px;
+        height: 100px;
+        background: blue;
+        margin: 10px;
+        color: white;
+      }
+      .container {
+        background: black;
+        min-height: 200px;
+        margin-top: 20px;
+        padding: 25px;
+      }
+      .container:nth-child(2) {
+        background: grey;
+      }
+      [draggable=true] {
+        cursor: move;
+      }
+      #placeholder {
+        display: none;
+        background: none;
+      }
+    </style>
+</head>
+<body>
+  <div id="sortable" class="container">
+    <div id="drag1" class="draggable" draggable="true" style="background: red;">1</div>
+    <div id="drag2" class="draggable" draggable="true" style="background: green;">2</div>
+    <div id="drag3" class="draggable" draggable="true" style="background: blue;">3</div>
+    <!-- <div id="placeholder" class="draggable"></div> -->
+
+  </div>
+
+  <div class="container"></div>
+</body>
+
+<script>
+var offsetX;
+var offsetY;
+var time = 0;
+var deltaTime = 0;
+var placeholder = document.querySelector("#placeholder");
+
+setInterval(() => time += 100, 100);
+  
+
+
+$(".container")
+  .sortable()
+  .draggable()
+;
+  
+
+// for (var element of document.querySelectorAll(".draggable")) {
+//   element.addEventListener("dragstart", (e) => {
+//     placeholder.style.display = "block";
+//     // e.target.style.display = "none";
+//     e.dataTransfer.setData("id", e.target.id);
+//     e.dataTransfer.setData("height", e.target.offsetHeight);
+//   });
+// }
+
+// for (var container of document.querySelectorAll(".container")) {
+//     container.addEventListener("dragover", (e) => {
+//       e.preventDefault();
+//       var height = 100;
+//       var index = parseInt((e.offsetY + 50) / height);
+      
+//       if (time - deltaTime >= 500) {
+//         console.log(height);
+//         console.log(e);
+//         try {
+//           container.insertBefore(placeholder, container.children[index])
+//         } catch(e) {
+//           console.log("error");
+//         }
+//         deltaTime = time;
+//       }
+//     });
+
+//     container.addEventListener("drop", (e) => {
+//       placeholder.style.display = "none";
+//       e.preventDefault();
+//       var container = e.target;
+//       var id = e.dataTransfer.getData("id");
+//       var height = parseInt(e.dataTransfer.getData("height"));
+//       var index = parseInt((e.offsetY + 50) / height);
+//       var element = document.getElementById(id);
+//       container.insertBefore(element, container.children[index]);
+//     });
+// }
+
+
+
+
+// document.addEventListener("mousedown", (e) => {
+//   offsetX = e.offsetX;
+//   offsetY = e.offsetY;
+//   console.log(e);
+// })
+
+// document.querySelector(".draggable").addEventListener("dragend", (e) => {
+//   target = e.target;
+
+//   target.style.left = (e.x - offsetX) + "px";
+//   target.style.top = (e.y - offsetY) + "px";
+// });
+
+
+ 
+</script>
+</html>
