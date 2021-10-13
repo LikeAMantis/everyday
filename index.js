@@ -7,9 +7,27 @@ const hslCol = {blue: [207, 57], red: [0,50], orange: [39, 51], purple: [300, 47
 
 var daysShowing = parseInt((document.body.offsetWidth - 513) / 60);
 var prev_daysShowing = daysShowing;
-var categories = JSON.parse(localStorage.categories);
+var categories = [
+    {
+        name: "Meditation", color: "blue", dates: {"2021-10-10": "done", "2021-10-9": "skip", "2021-10-8": "done"}
+    },
+];
+
+for (var categorie of categories) {
+    var dates = Object.keys(categorie.dates);
+    var newDates = {};
+
+    for (let date of dates) {
+        newDates[relDate(new Date(date), new Date("2021-10-10"))] = categorie.dates[date];
+    }
+    categorie.dates = newDates;
+};
+
 var date = new Date();
-var today = date.toDateString();
+const today = date.toDateString();
+
+
+
 
 var app;
 var datesRow;
@@ -44,7 +62,7 @@ $(".menu ul").sortable({
         categories.splice(index, 0, item);
         
         redraw(date);
-        updateStorage();
+        // updateStorage();
     }
 });
 
@@ -182,7 +200,7 @@ function toggleState(td, categorie) {
         categorie.dates[td.dataset.date] = "done";
     }
 
-    updateStorage();
+    // updateStorage();
     redraw(date);
 }
 
@@ -292,7 +310,7 @@ var oldName;
 function renameHabit() {
     var newName = $(".newHabit .habitname").first()[0].value;
     categories.find(x => x.name == oldName).name = newName;
-    localStorage.setItem("categories", JSON.stringify(categories));
+    // localStorage.setItem("categories", JSON.stringify(categories));
     
     redraw(date);
     closePopUp();
@@ -311,7 +329,7 @@ function drawAddHabitPopUp() {
 function addHabit() {
     var name = $(".newHabit .habitname").first()[0].value;
     categories.push({name: name, color: "green", dates:{}})
-    updateStorage();
+    // updateStorage();
     
     redraw(date);
     closePopUp();
@@ -320,7 +338,7 @@ function addHabit() {
 function deleteHabit() {
     if (confirm(`Deleting ${oldName}?`)) {
         categories = categories.filter(x => x.name != oldName);
-        updateStorage();
+        // updateStorage();
         redraw(date);
         closePopUp();
     }
@@ -359,7 +377,7 @@ function colorChange(element) {
     var col = element.title
     
     categories.find(x => x.name == name).color = col;
-    updateStorage();
+    // updateStorage();
     redraw(date)
 }
 
@@ -368,8 +386,18 @@ function colorChange(element) {
 
     // Utilities
 
+function relDate(date, rel) {
+    var difference = Math.ceil((date - rel) / (1000*60*60*24));
+    
+    var newDate = new Date();
+    newDate.setDate(newDate.getDate() + difference);
+
+    return parseDate(newDate);
+}
+
 function parseDate(date) {
     return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
 }
 
 function updateStorage() { localStorage.setItem("categories", JSON.stringify(categories)); }
+
