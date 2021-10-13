@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
     <link rel="shortcut icon" href="logo.png">
+    <link rel="stylesheet" href="index.css">
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.1/dist/chart.min.js"></script>
-    <link rel="stylesheet" href="everyday.css">
     <title>Statistics</title>
     <style>
         body {
@@ -21,7 +21,7 @@
             width: 700px;
             height: 900px;
             text-align: center;
-            font-size: 13pt;
+            font-size: 16pt;
             font-weight: 500;
             line-height: 29pt;
         }
@@ -29,25 +29,25 @@
 </head>
 <body>
     <div class="Chart-Container">
-        Done
-        <canvas id="myChart" ></canvas>
+        Done & Longest Streak
+        <canvas id="absoluteChart" ></canvas>
     </div>
     <div class="Chart-Container">
-        Percent
-        <canvas id="myChart2" ></canvas>
+        Comparison
+        <canvas id="relativeChart" ></canvas>
     </div>
 </body>
 <script>
-    var color = {blue: "#249cff", red: "#ff0000", orange: "#ffa503", purple: "#a64ca6", teal: "#329999", green: "#249c03", grey: "#888888",}
     var categories = JSON.parse(localStorage.categories);
     var categoriesAbsolute = categories.map(x => Object.values(x.dates)).map(x => x.filter(x => x == "done").length);
     var total = categoriesAbsolute.reduce((x, y) => x + y);
     var longestStreaks = categories.map(x => x.longestStreak);
 
     Chart.defaults.color ='white';
+    Chart.defaults.scale.grid.color = "grey";
 
-    var ctx = document.getElementById('myChart').getContext('2d');
-    var myChart = new Chart(ctx, {
+    var ctx = document.getElementById('absoluteChart').getContext('2d');
+    var absoluteChart = new Chart(ctx, {
     type: 'bar',
     data: {
         labels: categories.map(x => x.name),
@@ -55,7 +55,7 @@
             {
                 label: 'Done',
                 data: categoriesAbsolute,
-                backgroundColor: categories.map(x => color[x.color]),
+                backgroundColor: categories.map(categorie => getComputedStyle(document.documentElement).getPropertyValue(`--${categorie.color}`)),
                 borderColor: [
                     'black',
                 ],
@@ -91,15 +91,15 @@
     }
 });
 
-var ctx2 = document.getElementById('myChart2').getContext('2d');
-var myChart2 = new Chart(ctx2, {
+var ctx2 = document.getElementById('relativeChart').getContext('2d');
+var relativeChart = new Chart(ctx2, {
     type: 'doughnut',
     data: {
         labels: categories.map(x => x.name),
         datasets: [{
             label: '%',
             data: categoriesAbsolute.map(x => Math.round(x / total * 100)),
-            backgroundColor: categories.map(x => color[x.color]),
+            backgroundColor: categories.map(categorie => getComputedStyle(document.documentElement).getPropertyValue(`--${categorie.color}`)),
             borderColor: [
                 'black',
             ],
@@ -143,6 +143,5 @@ function updateRatio(e, legendItem, legend) {
     
     pieDoughnutLegendClickHandler(e, legendItem, legend);
 };
-
 </script>
 </html>
