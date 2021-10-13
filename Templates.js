@@ -23,7 +23,6 @@ const colorPicker = `
     </div>`;
 
 const habitPopUp = `
-    <div class="overlay">
         <div class="modal-dialog">
             <div class="modal-content" role="document">
                 <div class="modal-header"><button type="button" class="close"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button><a class="modal-title">Create Habit</a></div>
@@ -34,8 +33,8 @@ const habitPopUp = `
                     </div>
                 </div>
             </div>
-        </div>
-    </div>`;
+        </div>`
+        ;
 
 const editPopUp = function(name) {
     return `
@@ -52,8 +51,6 @@ const editPopUp = function(name) {
     </div>`
 }
 
-       
-
 const categorieContainer = function(categorie) {
     return `
     <div class="menuItem" id="controls"><i class="ion-edit"></i></div>
@@ -66,5 +63,4 @@ const categorieContainer = function(categorie) {
     </a>`
 }
     
-
 export {colorPicker, habitPopUp, editPopUp, categorieContainer}
