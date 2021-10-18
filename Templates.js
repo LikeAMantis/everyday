@@ -58,7 +58,6 @@ const categorieContainer = function(categorie) {
     <div class="color-picker" style="background-color: var(--${categorie.color});"></div>
     </div><a class="draggable">
     <div><span>Categorie</span>
-    <div class="above"></div>
     </div>
     </a>`
 }
