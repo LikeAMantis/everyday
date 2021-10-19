@@ -127,7 +127,7 @@ function createDates(dateObject) {
         
         if (dateObject.toDateString() == today) {
             td.className = "today";
-            $(td).find("div").className = "circle";
+            $(td).find("div").first().addClass("circle");
         }
         
         var day = Days[dateObject.getDay()];
